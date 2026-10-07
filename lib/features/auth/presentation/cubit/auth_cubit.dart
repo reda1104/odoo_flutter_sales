@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:odoo_flutter_task/features/auth/data/repositories/auth_repository.dart';
 
@@ -19,8 +20,13 @@ class AuthCubit extends Cubit<AuthState> {
         username: username,
         password: password,
       );
+      final isInternalUser = await authRepository.isInternalUser(
+        session.userId,
+      );
+      // debugPrint('User ID: ${session.userId}');
+      // debugPrint('Is Internal User: $isInternalUser');
 
-      emit(AuthSuccess(session));
+      emit(AuthSuccess(session, isInternalUser));
     } catch (e) {
       emit(AuthFailure(e.toString()));
     }

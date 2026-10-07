@@ -8,8 +8,9 @@ class AuthLoading extends AuthState {}
 
 class AuthSuccess extends AuthState {
   final OdooSession session;
+  final bool isInternalUser;
 
-  AuthSuccess(this.session);
+  AuthSuccess(this.session, this.isInternalUser);
 }
 
 class AuthFailure extends AuthState {

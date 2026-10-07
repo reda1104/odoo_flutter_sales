@@ -17,4 +17,17 @@ class AuthRepository {
       password: password,
     );
   }
+
+  Future<bool> isInternalUser(int userId) async {
+    final result = await odooService.callKw(
+      model: 'res.users',
+      method: 'has_group',
+      args: [
+        [userId],
+        'base.group_user',
+      ],
+    );
+
+    return result as bool;
+  }
 }

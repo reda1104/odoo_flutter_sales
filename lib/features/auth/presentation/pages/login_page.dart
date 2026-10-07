@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:odoo_flutter_task/features/customers/data/repositories/customer_repository.dart';
 import 'package:odoo_flutter_task/features/customers/presentation/cubit/customer_cubit.dart';
 import 'package:odoo_flutter_task/features/customers/presentation/pages/customers_page.dart';
+import 'package:odoo_flutter_task/features/main/presentation/pages/main_page.dart';
 
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
@@ -40,7 +41,8 @@ class _LoginPageState extends State<LoginPage> {
                     builder: (_) => BlocProvider(
                       create: (_) =>
                           CustomersCubit(context.read<CustomerRepository>()),
-                      child: const CustomersPage(),
+
+                      child: MainPage(isInternalUser: state.isInternalUser),
                     ),
                   ),
                 );
