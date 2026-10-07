@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:odoo_flutter_task/features/customers/presentation/cubit/customer_cubit.dart';
-import 'package:odoo_flutter_task/features/customers/presentation/cubit/customer_state.dart';
-import 'package:odoo_flutter_task/features/customers/presentation/pages/customers_details_page.dart';
+import 'package:odoo_flutter_task/features/sales_orders/presentation/cubit/sales_order_cubit.dart';
+import 'package:odoo_flutter_task/features/sales_orders/presentation/cubit/sales_order_state.dart';
+import 'package:odoo_flutter_task/features/sales_orders/presentation/pages/sales_order_details_page.dart';
 
-class CustomersPage extends StatefulWidget {
-  const CustomersPage({super.key});
+class SalesOrderPage extends StatefulWidget {
+  const SalesOrderPage({super.key});
 
   @override
-  State<CustomersPage> createState() => _CustomersPageState();
+  State<SalesOrderPage> createState() => _SalesOrderPageState();
 }
 
-class _CustomersPageState extends State<CustomersPage> {
+class _SalesOrderPageState extends State<SalesOrderPage> {
   @override
   void initState() {
     super.initState();
-    context.read<CustomersCubit>().getCustomers();
+    context.read<SalesOrderCubit>().getSalesOrders();
   }
 
   @override
@@ -26,41 +26,17 @@ class _CustomersPageState extends State<CustomersPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 8),
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 16),
             child: Text(
-              'Customers',
+              'Sales Orders',
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
           ),
 
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search customers...',
-                hintStyle: TextStyle(color: Colors.grey.shade500),
-                prefixIcon: Icon(Icons.search, color: Colors.blue.shade700),
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 16,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              onChanged: (value) {
-                context.read<CustomersCubit>().searchCustomers(value);
-              },
-            ),
-          ),
-
           Expanded(
-            child: BlocBuilder<CustomersCubit, CustomersState>(
+            child: BlocBuilder<SalesOrderCubit, SalesOrderState>(
               builder: (context, state) {
-                if (state is CustomersLoading) {
+                if (state is SalesOrderLoading) {
                   return Center(
                     child: CircularProgressIndicator(
                       color: Colors.blue.shade700,
@@ -68,7 +44,7 @@ class _CustomersPageState extends State<CustomersPage> {
                   );
                 }
 
-                if (state is CustomersFailure) {
+                if (state is SalesOrderFailure) {
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.all(24),
@@ -82,7 +58,7 @@ class _CustomersPageState extends State<CustomersPage> {
                           ),
                           const SizedBox(height: 12),
                           const Text(
-                            'Unable to load customers',
+                            'Unable to load sales orders',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -90,7 +66,7 @@ class _CustomersPageState extends State<CustomersPage> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Pull down or try again later.',
+                            'Please try again later.',
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.grey.shade600,
@@ -102,20 +78,20 @@ class _CustomersPageState extends State<CustomersPage> {
                   );
                 }
 
-                if (state is CustomersSuccess) {
-                  if (state.customers.isEmpty) {
+                if (state is SalesOrderSuccess) {
+                  if (state.salesOrders.isEmpty) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.people_outline,
+                            Icons.shopping_bag_outlined,
                             size: 55,
                             color: Colors.grey.shade400,
                           ),
                           const SizedBox(height: 12),
                           const Text(
-                            'No customers found',
+                            'No sales orders found',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -128,14 +104,14 @@ class _CustomersPageState extends State<CustomersPage> {
 
                   return RefreshIndicator(
                     onRefresh: () {
-                      return context.read<CustomersCubit>().getCustomers();
+                      return context.read<SalesOrderCubit>().getSalesOrders();
                     },
                     child: ListView.separated(
                       padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-                      itemCount: state.customers.length,
+                      itemCount: state.salesOrders.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
-                        final customer = state.customers[index];
+                        final salesOrder = state.salesOrders[index];
 
                         return Material(
                           color: Colors.white,
@@ -147,9 +123,9 @@ class _CustomersPageState extends State<CustomersPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => BlocProvider.value(
-                                    value: context.read<CustomersCubit>(),
-                                    child: CustomerDetailsPage(
-                                      customer: customer,
+                                    value: context.read<SalesOrderCubit>(),
+                                    child: SalesOrderDetailsPage(
+                                      salesOrder: salesOrder,
                                     ),
                                   ),
                                 ),
@@ -158,14 +134,19 @@ class _CustomersPageState extends State<CustomersPage> {
                             child: Padding(
                               padding: const EdgeInsets.all(16),
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  CircleAvatar(
-                                    radius: 26,
-                                    backgroundColor: Colors.blue.shade50,
+                                  Container(
+                                    width: 52,
+                                    height: 52,
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.shade50,
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
                                     child: Icon(
-                                      Icons.person_outline,
+                                      Icons.shopping_bag_outlined,
                                       color: Colors.blue.shade700,
-                                      size: 28,
+                                      size: 27,
                                     ),
                                   ),
 
@@ -176,29 +157,39 @@ class _CustomersPageState extends State<CustomersPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          customer.name,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                          ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                salesOrder.orderNumber,
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+
+                                            _buildStatusBadge(
+                                              salesOrder.status,
+                                            ),
+                                          ],
                                         ),
 
-                                        const SizedBox(height: 6),
+                                        const SizedBox(height: 8),
 
                                         Row(
                                           children: [
                                             Icon(
-                                              Icons.phone_outlined,
+                                              Icons.person_outline,
                                               size: 17,
                                               color: Colors.grey.shade600,
                                             ),
                                             const SizedBox(width: 6),
                                             Expanded(
                                               child: Text(
-                                                customer.phone.isEmpty
-                                                    ? 'No phone'
-                                                    : customer.phone,
+                                                salesOrder.customerName,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                   fontSize: 15,
                                                   color: Colors.grey.shade700,
@@ -208,27 +199,21 @@ class _CustomersPageState extends State<CustomersPage> {
                                           ],
                                         ),
 
-                                        const SizedBox(height: 4),
+                                        const SizedBox(height: 5),
 
                                         Row(
                                           children: [
                                             Icon(
-                                              Icons.location_on_outlined,
-                                              size: 17,
+                                              Icons.calendar_today_outlined,
+                                              size: 16,
                                               color: Colors.grey.shade600,
                                             ),
                                             const SizedBox(width: 6),
-                                            Expanded(
-                                              child: Text(
-                                                customer.fullAddress.isEmpty
-                                                    ? 'No address'
-                                                    : customer.fullAddress,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey.shade600,
-                                                ),
+                                            Text(
+                                              salesOrder.orderDate,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey.shade600,
                                               ),
                                             ),
                                           ],
@@ -236,6 +221,8 @@ class _CustomersPageState extends State<CustomersPage> {
                                       ],
                                     ),
                                   ),
+
+                                  const SizedBox(width: 8),
 
                                   Icon(
                                     Icons.chevron_right_rounded,
@@ -256,6 +243,43 @@ class _CustomersPageState extends State<CustomersPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildStatusBadge(String status) {
+    String text;
+
+    switch (status) {
+      case 'draft':
+        text = 'Draft';
+        break;
+      case 'sent':
+        text = 'Quotation Sent';
+        break;
+      case 'sale':
+        text = 'Confirmed';
+        break;
+      case 'cancel':
+        text = 'Cancelled';
+        break;
+      default:
+        text = status;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.blue.shade700,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

@@ -28,7 +28,9 @@ class AuthCubit extends Cubit<AuthState> {
 
       emit(AuthSuccess(session, isInternalUser));
     } catch (e) {
-      emit(AuthFailure(e.toString()));
+      emit(
+        AuthFailure('Login failed. Please check your username and password.'),
+      );
     }
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:odoo_flutter_task/features/customers/presentation/pages/customers_page.dart';
+import 'package:odoo_flutter_task/features/sales_orders/presentation/pages/sales_order_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.isInternalUser});
+
   final bool isInternalUser;
 
   @override
@@ -11,27 +13,72 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Main Page')),
-      body: currentIndex == 0
-          ? CustomersPage()
-          : Center(
-              child: Text("Sales Orders", style: const TextStyle(fontSize: 24)),
+      backgroundColor: const Color(0xFFF5F7FB),
+
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF5F7FB),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        titleSpacing: 20,
+        title: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: Colors.blue.shade700,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.business_rounded,
+                color: Colors.white,
+                size: 22,
+              ),
             ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) {
+
+            const SizedBox(width: 12),
+
+            const Text(
+              'Odoo Sales',
+              style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+
+      body: currentIndex == 0 ? const CustomersPage() : const SalesOrderPage(),
+
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: currentIndex,
+        backgroundColor: Colors.white,
+        indicatorColor: Colors.blue.shade50,
+        height: 72,
+        onDestinationSelected: (index) {
           setState(() {
             currentIndex = index;
           });
         },
-        currentIndex: currentIndex,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Customers'),
+        destinations: [
+          NavigationDestination(
+            icon: Icon(Icons.people_outline, color: Colors.grey.shade600),
+            selectedIcon: Icon(Icons.people, color: Colors.blue.shade700),
+            label: 'Customers',
+          ),
+
           if (widget.isInternalUser)
-            BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart),
+            NavigationDestination(
+              icon: Icon(
+                Icons.shopping_bag_outlined,
+                color: Colors.grey.shade600,
+              ),
+              selectedIcon: Icon(
+                Icons.shopping_bag,
+                color: Colors.blue.shade700,
+              ),
               label: 'Sales',
             ),
         ],

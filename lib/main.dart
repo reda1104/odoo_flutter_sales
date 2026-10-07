@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:odoo_flutter_task/features/customers/data/repositories/customer_repository.dart';
+import 'package:odoo_flutter_task/features/sales_orders/data/repositories/sales_order_repository.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/networks/odoo_service.dart';
@@ -14,12 +15,14 @@ void main() {
   final authRepository = AuthRepository(odooService);
 
   final customerRepository = CustomerRepository(odooService);
+  final salesOrderRepository = SalesOrderRepository(odooService);
 
   runApp(
     MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: authRepository),
         RepositoryProvider.value(value: customerRepository),
+        RepositoryProvider.value(value: salesOrderRepository),
       ],
       child: const MyApp(),
     ),
