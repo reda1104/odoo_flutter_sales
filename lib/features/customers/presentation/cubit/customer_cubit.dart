@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:odoo_flutter_task/features/customers/data/models/customer_model.dart';
 import 'package:odoo_flutter_task/features/customers/data/repositories/customer_repository.dart';
@@ -7,8 +10,28 @@ class CustomersCubit extends Cubit<CustomersState> {
   final CustomerRepository customerRepository;
 
   List<CustomerModel> allCustomers = [];
+  late final StreamSubscription<List<ConnectivityResult>>
+  connectivitySubscription;
+  bool wasOffline = false;
 
-  CustomersCubit(this.customerRepository) : super(CustomersInitial());
+  CustomersCubit(this.customerRepository) : super(CustomersInitial()) {
+    connectivitySubscription = Connectivity().onConnectivityChanged.listen((
+      connection,
+    ) {
+      if (connection.contains(ConnectivityResult.none)) {
+        wasOffline = true;
+      } else if (wasOffline) {
+        wasOffline = false;
+        getCustomers();
+      }
+    });
+  }
+
+  @override
+  Future<void> close() async {
+    await connectivitySubscription.cancel();
+    return super.close();
+  }
 
   Future<void> getCustomers() async {
     emit(CustomersLoading());
@@ -37,21 +60,25 @@ class CustomersCubit extends Cubit<CustomersState> {
     emit(CustomersSuccess(filteredCustomers));
   }
 
-  Future<bool> updatePhone({
+  Future<PhoneUpdateResult?> updatePhone({
     required int customerId,
     required String phone,
   }) async {
     try {
-      await customerRepository.updatePhone(
+      final result = await customerRepository.updatePhone(
         customerId: customerId,
         phone: phone,
       );
 
+      if (result == PhoneUpdateResult.queued) {
+        wasOffline = true;
+      }
+
       await getCustomers();
 
-      return true;
+      return result;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 }

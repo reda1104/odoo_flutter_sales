@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:odoo_flutter_task/features/customers/data/models/customer_model.dart';
+import 'package:odoo_flutter_task/features/customers/data/repositories/customer_repository.dart';
 import 'package:odoo_flutter_task/features/customers/presentation/cubit/customer_cubit.dart';
 
 class CustomerDetailsPage extends StatefulWidget {
@@ -31,11 +32,13 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
   }
 
   Future<void> savePhone() async {
+    if (isSaving) return;
+
     setState(() {
       isSaving = true;
     });
 
-    final success = await context.read<CustomersCubit>().updatePhone(
+    final result = await context.read<CustomersCubit>().updatePhone(
       customerId: widget.customer.id,
       phone: phoneController.text.trim(),
     );
@@ -46,14 +49,24 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
       isSaving = false;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          success ? 'Phone updated successfully' : 'Failed to update phone',
+    if (result != null) {
+      final message = result == PhoneUpdateResult.queued
+          ? 'Saved offline. Will sync when internet returns.'
+          : 'Phone updated successfully';
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+      );
+
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to update phone number'),
+          behavior: SnackBarBehavior.floating,
         ),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+      );
+    }
   }
 
   @override

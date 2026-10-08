@@ -52,37 +52,37 @@ class _MainPageState extends State<MainPage> {
 
       body: currentIndex == 0 ? const CustomersPage() : const SalesOrderPage(),
 
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: currentIndex,
-        backgroundColor: Colors.white,
-        indicatorColor: Colors.blue.shade50,
-        height: 72,
-        onDestinationSelected: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
-        destinations: [
-          NavigationDestination(
-            icon: Icon(Icons.people_outline, color: Colors.grey.shade600),
-            selectedIcon: Icon(Icons.people, color: Colors.blue.shade700),
-            label: 'Customers',
-          ),
-
-          if (widget.isInternalUser)
-            NavigationDestination(
-              icon: Icon(
-                Icons.shopping_bag_outlined,
-                color: Colors.grey.shade600,
-              ),
-              selectedIcon: Icon(
-                Icons.shopping_bag,
-                color: Colors.blue.shade700,
-              ),
-              label: 'Sales',
-            ),
-        ],
-      ),
+      bottomNavigationBar: widget.isInternalUser
+          ? NavigationBar(
+              selectedIndex: currentIndex,
+              backgroundColor: Colors.white,
+              indicatorColor: Colors.blue.shade50,
+              height: 72,
+              onDestinationSelected: (index) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
+              destinations: [
+                NavigationDestination(
+                  icon: Icon(Icons.people_outline, color: Colors.grey.shade600),
+                  selectedIcon: Icon(Icons.people, color: Colors.blue.shade700),
+                  label: 'Customers',
+                ),
+                NavigationDestination(
+                  icon: Icon(
+                    Icons.shopping_bag_outlined,
+                    color: Colors.grey.shade600,
+                  ),
+                  selectedIcon: Icon(
+                    Icons.shopping_bag,
+                    color: Colors.blue.shade700,
+                  ),
+                  label: 'Sales',
+                ),
+              ],
+            )
+          : null,
     );
   }
 }

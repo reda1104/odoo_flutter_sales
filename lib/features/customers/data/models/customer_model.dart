@@ -31,7 +31,9 @@ class CustomerModel {
       street: _parseString(json['street']),
       street2: _parseString(json['street2']),
       zip: _parseString(json['zip']),
-      country: _parseCountry(json['country_id']),
+      country: json.containsKey('country')
+          ? _parseString(json['country'])
+          : _parseCountry(json['country_id']),
     );
   }
 
@@ -63,5 +65,19 @@ class CustomerModel {
       zip,
       country,
     ].where((value) => value.isNotEmpty).join(', ');
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'phone': phone,
+      'email': email,
+      'city': city,
+      'street': street,
+      'street2': street2,
+      'zip': zip,
+      'country': country,
+    };
   }
 }
