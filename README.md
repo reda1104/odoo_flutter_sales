@@ -87,7 +87,7 @@ lib/
 
    ```bash
    git clone https://github.com/reda1104/odoo_flutter_sales.git
-   cd odoo_flutter_task
+   cd odoo_flutter_sales
    ```
 
 2. Install dependencies:
