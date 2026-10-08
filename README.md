@@ -1,6 +1,6 @@
 # Flutter Odoo Client
 
-A Flutter mobile application built as a technical assessment to demonstrate integration with **Odoo 19** using JSON-RPC, role-aware navigation, customer management, sales order workflows, and offline support.
+A Flutter mobile application to demonstrate integration with **Odoo 19** using JSON-RPC, role-aware navigation, customer management, sales order workflows, and offline support.
 
 ## Features
 
