@@ -38,7 +38,6 @@ class _LoginPageState extends State<LoginPage> {
             child: BlocConsumer<AuthCubit, AuthState>(
               listener: (context, state) {
                 if (state is AuthSuccess) {
-                  // Get the repositories while LoginPage's context is still active.
                   final customerRepository = context.read<CustomerRepository>();
                   customerRepository.setUserId(state.session.userId);
 
