@@ -169,11 +169,7 @@ The application uses Odoo RPC methods, including:
 5. Load customers online, disconnect the device, edit a phone number, and verify the offline confirmation message.
 6. Reconnect the device, refresh customers if necessary, and verify the change in the Odoo web interface.
 
-## Notes for reviewers
 
-- Please use **test accounts and test records**, not production data.
-- Demo account credentials should be shared separately from the repository.
-- Odoo permissions and record rules determine the operations available to each test account.
 
 ---
 
